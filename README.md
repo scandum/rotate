@@ -56,7 +56,7 @@ Its first known publication was in 1981. You swap the smallest array to its prop
 
 Grail Rotation
 --------------
-The grail rotation is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation when the smallest side reaches a size of 1 element.
+The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation when the smallest side reaches a size of 1 element.
 
 Beaker Rotation
 ---------------
