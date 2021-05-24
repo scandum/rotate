@@ -102,7 +102,7 @@ void auxiliary_rotation(int *array, size_t left, size_t right)
 	free(swap);
 }
 
-// Gries-Mills derived
+// Gries-Mills / Holy Grail derived, based on the java implementation by Control
 
 void beaker_rotation(int *array, size_t left, size_t right)
 {
@@ -225,7 +225,7 @@ void contrev_rotation(int *array, size_t left, size_t right)
 	}
 }
 
-// Gries-Mills derived
+// Gries-Mills derived, based on the java implementation from the Holy Grail Sort project
 
 void grail_rotation(int *array, size_t left, size_t right)
 {
@@ -278,7 +278,7 @@ void grail_rotation(int *array, size_t left, size_t right)
 	}
 }
 
-// Juggling rotation
+// Juggling / Dolphin rotation
 
 int gcd(int a, int b)
 {
