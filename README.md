@@ -83,6 +83,8 @@ It should be noted that the auxiliary Rotation performs better for smaller array
 
 The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 bench.c`. Each test was ran 1,000 times with the time (in seconds) reported of the best and average run.
 
+![rotation graph](/graph1.png)
+
 <details><summary><b>data table</b></summary>
 
 |      Name |    Items | Type |     Best |  Average |     Loops | Samples |     Distribution |
