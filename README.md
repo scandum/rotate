@@ -27,7 +27,7 @@ Bentley's Juggling Rotation
 ---------------------------
 Also known as the dolphin algorithm. This is a relatively complex and slow way to rotate in-place. Its first known publication was in 1965.
 
-It finds the greatest common divor and uses a loop to create a chain of consecutive swaps.
+It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
 Triple Reversal Rotation
 ------------------------
