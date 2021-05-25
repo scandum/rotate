@@ -31,7 +31,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 
 Triple Reversal Rotation
 ------------------------
-This is an easy and reliably way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped.
+This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped.
 ```
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -66,7 +66,7 @@ Its first known publication was in 1981. You swap the smallest array to its prop
 
 Grail Rotation
 --------------
-The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation when the smallest side reaches a size of 1 element.
+The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element.
 
 Beaker Rotation
 ---------------
@@ -74,7 +74,7 @@ The beaker rotation is grail derived and uses a modulo computation to minimize t
 
 Conjoined Triple Reversal Rotation
 ----------------------------------
-The conjoined triple reversal rotation (aka contrev rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. 
+The conjoined triple reversal rotation (aka contrev rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. It skips the contrev rotation and performs an auxiliary rotation on stack memory if the smallest side is smaller than 8 elements.
 
 Benchmarks
 ----------
