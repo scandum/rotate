@@ -75,7 +75,39 @@ The beaker rotation is grail derived and uses a modulo computation to minimize t
 Conjoined Triple Reversal Rotation
 ----------------------------------
 The conjoined triple reversal rotation (aka contrev rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. It skips the contrev rotation and performs an auxiliary rotation on stack memory if the smallest side is smaller than 8 elements.
-
+```
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+  ↓                       ↓  ↓              ↓
+┌──────────────────────────┬─────────────────┐
+│10  2  3  4  5  6  7  8  1│15 11 12 13 14  9│
+└──────────────────────────┴─────────────────┘
+     ↓                 ↓        ↓        ↓
+┌──────────────────────────┬─────────────────┐
+│10 11  3  4  5  6  7  2  1│15 14 12 13  8  9│
+└──────────────────────────┴─────────────────┘
+        ↓           ↓              ↓  ↓
+┌──────────────────────────┬─────────────────┐
+│10 11 12  4  5  6  3  2  1│15 14 13  7  8  9│
+└──────────────────────────┴─────────────────┘
+           ↓     ↓                 ↓
+┌──────────────────────────┬─────────────────┐
+│10 11 12 13  5  4  3  2  1│15 14  6  7  8  9│
+└──────────────────────────┴─────────────────┘
+              ↓                 ↓
+┌──────────────────────────┬─────────────────┐
+│10 11 12 13 14  4  3  2  1│15  5  6  7  8  9│
+└──────────────────────────┴─────────────────┘
+                 ↓           ↓
+┌──────────────────────────┬─────────────────┐
+│10 11 12 13 14 15  3  2  1│ 4  5  6  7  8  9│
+└──────────────────────────┴─────────────────┘
+                    ↓     ↓
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
 Benchmarks
 ----------
 Since the juggling rotation is rather slow and the grail/beaker rotations are fairly similar I've omitted the juggling and grail rotation from the benchmark graph.
