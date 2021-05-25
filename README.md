@@ -74,7 +74,7 @@ The beaker rotation is grail derived and uses a modulo computation to minimize t
 
 Conjoined Triple Reversal Rotation
 ----------------------------------
-The conjoined triple reversal rotation (aka contrev rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. It skips the contrev rotation and performs an auxiliary rotation on stack memory if the smallest side is smaller than 8 elements.
+The conjoined triple reversal rotation (aka trinity rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. Optionally, if the smallest side is smaller than 8 elements it skips the trinity rotation and performs an auxiliary rotation on stack memory.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -115,11 +115,11 @@ Since the juggling rotation is rather slow and the grail/beaker rotations are fa
 While performance may vary depending on the specific implemention, from worst to best the order is:
 
 * Bentley's Juggling Rotation
-* Triple Reversal Rotation (triprev)
+* Triple Reversal Rotation (reversal)
 * Grail Rotation
 * Beaker Rotation (beaker)
 * Auxiliary Rotation (auxiliary)
-* Conjoined Triple Reversal Rotation (contrev)
+* Conjoined Triple Reversal Rotation (trinity)
 
 It should be noted that the auxiliary Rotation performs better for smaller arrays and when the relative size difference between the two halves is large.
 
@@ -131,46 +131,46 @@ The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18
 
 |      Name |    Items | Type |     Best |  Average |     Loops | Samples |     Distribution |
 | --------- | -------- | ---- | -------- | -------- | --------- | ------- | ---------------- |
-| auxiliary |  1000000 |   32 | 0.000386 | 0.000429 |         1 |    1000 |         1/999999 |
-|    beaker |  1000000 |   32 | 0.000381 | 0.000418 |         1 |    1000 |         1/999999 |
-|   contrev |  1000000 |   32 | 0.000380 | 0.000408 |         1 |    1000 |         1/999999 |
-|     grail |  1000000 |   32 | 0.000376 | 0.000410 |         1 |    1000 |         1/999999 |
-|  juggling |  1000000 |   32 | 0.000613 | 0.000642 |         1 |    1000 |         1/999999 |
-|   triprev |  1000000 |   32 | 0.000532 | 0.000576 |         1 |    1000 |         1/999999 |
+| auxiliary |  1000000 |   32 | 0.000357 | 0.000381 |         1 |    1000 |         1/999999 |
+|    beaker |  1000000 |   32 | 0.000357 | 0.000382 |         1 |    1000 |         1/999999 |
+|     grail |  1000000 |   32 | 0.000357 | 0.000377 |         1 |    1000 |         1/999999 |
+|  juggling |  1000000 |   32 | 0.000597 | 0.000623 |         1 |    1000 |         1/999999 |
+|   trinity |  1000000 |   32 | 0.000357 | 0.000377 |         1 |    1000 |         1/999999 |
+|  reversal |  1000000 |   32 | 0.000510 | 0.000544 |         1 |    1000 |         1/999999 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000451 | 0.000480 |         1 |    1000 |    100000/900000 |
-|    beaker |  1000000 |   32 | 0.000468 | 0.000500 |         1 |    1000 |    100000/900000 |
-|   contrev |  1000000 |   32 | 0.000429 | 0.000461 |         1 |    1000 |    100000/900000 |
-|     grail |  1000000 |   32 | 0.000468 | 0.000502 |         1 |    1000 |    100000/900000 |
-|  juggling |  1000000 |   32 | 0.000648 | 0.000674 |         1 |    1000 |    100000/900000 |
-|   triprev |  1000000 |   32 | 0.000526 | 0.000560 |         1 |    1000 |    100000/900000 |
+| auxiliary |  1000000 |   32 | 0.000434 | 0.000463 |         1 |    1000 |    100000/900000 |
+|    beaker |  1000000 |   32 | 0.000447 | 0.000469 |         1 |    1000 |    100000/900000 |
+|     grail |  1000000 |   32 | 0.000450 | 0.000475 |         1 |    1000 |    100000/900000 |
+|  juggling |  1000000 |   32 | 0.000630 | 0.000653 |         1 |    1000 |    100000/900000 |
+|   trinity |  1000000 |   32 | 0.000412 | 0.000444 |         1 |    1000 |    100000/900000 |
+|  reversal |  1000000 |   32 | 0.000501 | 0.000530 |         1 |    1000 |    100000/900000 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000488 | 0.000528 |         1 |    1000 |    199999/800001 |
-|    beaker |  1000000 |   32 | 0.000687 | 0.000718 |         1 |    1000 |    199999/800001 |
-|   contrev |  1000000 |   32 | 0.000444 | 0.000481 |         1 |    1000 |    199999/800001 |
-|     grail |  1000000 |   32 | 0.000646 | 0.000677 |         1 |    1000 |    199999/800001 |
-|  juggling |  1000000 |   32 | 0.000806 | 0.000869 |         1 |    1000 |    199999/800001 |
-|   triprev |  1000000 |   32 | 0.000532 | 0.000576 |         1 |    1000 |    199999/800001 |
+| auxiliary |  1000000 |   32 | 0.000471 | 0.000500 |         1 |    1000 |    199999/800001 |
+|    beaker |  1000000 |   32 | 0.000667 | 0.000695 |         1 |    1000 |    199999/800001 |
+|     grail |  1000000 |   32 | 0.000625 | 0.000651 |         1 |    1000 |    199999/800001 |
+|  juggling |  1000000 |   32 | 0.000784 | 0.000816 |         1 |    1000 |    199999/800001 |
+|   trinity |  1000000 |   32 | 0.000430 | 0.000460 |         1 |    1000 |    199999/800001 |
+|  reversal |  1000000 |   32 | 0.000511 | 0.000545 |         1 |    1000 |    199999/800001 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000544 | 0.000588 |         1 |    1000 |    299998/700002 |
-|    beaker |  1000000 |   32 | 0.000511 | 0.000546 |         1 |    1000 |    299998/700002 |
-|   contrev |  1000000 |   32 | 0.000445 | 0.000482 |         1 |    1000 |    299998/700002 |
-|     grail |  1000000 |   32 | 0.000533 | 0.000569 |         1 |    1000 |    299998/700002 |
-|  juggling |  1000000 |   32 | 0.001966 | 0.002025 |         1 |    1000 |    299998/700002 |
-|   triprev |  1000000 |   32 | 0.000533 | 0.000575 |         1 |    1000 |    299998/700002 |
+| auxiliary |  1000000 |   32 | 0.000525 | 0.000561 |         1 |    1000 |    299998/700002 |
+|    beaker |  1000000 |   32 | 0.000494 | 0.000544 |         1 |    1000 |    299998/700002 |
+|     grail |  1000000 |   32 | 0.000515 | 0.000551 |         1 |    1000 |    299998/700002 |
+|  juggling |  1000000 |   32 | 0.001917 | 0.002023 |         1 |    1000 |    299998/700002 |
+|   trinity |  1000000 |   32 | 0.000429 | 0.000461 |         1 |    1000 |    299998/700002 |
+|  reversal |  1000000 |   32 | 0.000511 | 0.000549 |         1 |    1000 |    299998/700002 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000594 | 0.000646 |         1 |    1000 |    399997/600003 |
-|    beaker |  1000000 |   32 | 0.000541 | 0.000576 |         1 |    1000 |    399997/600003 |
-|   contrev |  1000000 |   32 | 0.000439 | 0.000478 |         1 |    1000 |    399997/600003 |
-|     grail |  1000000 |   32 | 0.000563 | 0.000600 |         1 |    1000 |    399997/600003 |
-|  juggling |  1000000 |   32 | 0.001757 | 0.001821 |         1 |    1000 |    399997/600003 |
-|   triprev |  1000000 |   32 | 0.000526 | 0.000588 |         1 |    1000 |    399997/600003 |
+| auxiliary |  1000000 |   32 | 0.000567 | 0.000599 |         1 |    1000 |    399997/600003 |
+|    beaker |  1000000 |   32 | 0.000516 | 0.000544 |         1 |    1000 |    399997/600003 |
+|     grail |  1000000 |   32 | 0.000544 | 0.000570 |         1 |    1000 |    399997/600003 |
+|  juggling |  1000000 |   32 | 0.001724 | 0.001773 |         1 |    1000 |    399997/600003 |
+|   trinity |  1000000 |   32 | 0.000429 | 0.000459 |         1 |    1000 |    399997/600003 |
+|  reversal |  1000000 |   32 | 0.000509 | 0.000545 |         1 |    1000 |    399997/600003 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000630 | 0.000696 |         1 |    1000 |    499996/500004 |
-|    beaker |  1000000 |   32 | 0.000480 | 0.000512 |         1 |    1000 |    499996/500004 |
-|   contrev |  1000000 |   32 | 0.000432 | 0.000471 |         1 |    1000 |    499996/500004 |
-|     grail |  1000000 |   32 | 0.000806 | 0.000846 |         1 |    1000 |    499996/500004 |
-|  juggling |  1000000 |   32 | 0.001112 | 0.001155 |         1 |    1000 |    499996/500004 |
-|   triprev |  1000000 |   32 | 0.000523 | 0.000561 |         1 |    1000 |    499996/500004 |
+| auxiliary |  1000000 |   32 | 0.000613 | 0.000657 |         1 |    1000 |    499996/500004 |
+|    beaker |  1000000 |   32 | 0.000460 | 0.000483 |         1 |    1000 |    499996/500004 |
+|     grail |  1000000 |   32 | 0.000789 | 0.000825 |         1 |    1000 |    499996/500004 |
+|  juggling |  1000000 |   32 | 0.001059 | 0.001099 |         1 |    1000 |    499996/500004 |
+|   trinity |  1000000 |   32 | 0.000417 | 0.000446 |         1 |    1000 |    499996/500004 |
+|  reversal |  1000000 |   32 | 0.000501 | 0.000539 |         1 |    1000 |    499996/500004 |
 
 </details>
