@@ -5,13 +5,13 @@ Below I'll describe several variants, notably the conjoined triple reversal, fol
 Introduction to rotating
 ------------------------
 A rotation is to swap the left side of an array with the right side.
-```
+```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
 ```
 It's a common operation in a variety of sorting algorithms. After the rotation the data is as following.
-```
+```c
 ┌─────────────────┬──────────────────────────┐
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
@@ -32,7 +32,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 Triple Reversal Rotation
 ------------------------
 This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped.
-```
+```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
@@ -46,7 +46,7 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 Gries-Mills Rotation
 --------------------
 Its first known publication was in 1981. You swap the smallest array to its proper location, since it's in its proper location you can forget about it. The larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements.
-```
+```c
 ┌───────────────────────────┬──────────────────┐
 │ 1  2  3  4  5  6   7  8  9│10 11 12  13 14 15│
 └───────────────────────────┴──────────────────┘
@@ -75,7 +75,7 @@ The beaker rotation is grail derived and uses a modulo computation to minimize t
 Conjoined Triple Reversal Rotation
 ----------------------------------
 The conjoined triple reversal rotation (aka contrev rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. It skips the contrev rotation and performs an auxiliary rotation on stack memory if the smallest side is smaller than 8 elements.
-```
+```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
