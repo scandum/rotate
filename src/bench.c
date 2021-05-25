@@ -43,8 +43,6 @@
 
 #include "rotate.h"
 
-typedef void SRTFUNC(void *array, size_t left, size_t right);
-
 long long utime()
 {
 	struct timeval now_time;
@@ -94,12 +92,9 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 				case 'a':
 					auxiliary_rotation(array, left, right);
 					break;
+
 				case 'b':
 					beaker_rotation(array, left, right);
-					break;
-
-				case 'c':
-					contrev_rotation(array, left, right);
 					break;
 
 				case 'g':
@@ -110,9 +105,15 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 					juggling_rotation(array, left, right);
 					break;
 
-				case 't':
-					triprev_rotation(array, left, right);
+				case 'r':
+					reversal_rotation(array, left, right);
 					break;
+
+				case 't':
+					trinity_rotation(array, left, right);
+					break;
+
+
 			}
 		}
 		end = utime();
@@ -130,7 +131,7 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 
 	printf("|%10s | %8d | %4d | %f | %f | %9d | %7d | %16s |\n", name, max, (int) size * 8, best / 1000000.0, average / 1000000.0, repetitions, samples, desc);
 
-	for (cnt = 1 ; cnt < max ; cnt++)
+	for (cnt = 0 ; cnt < max ; cnt++)
 	{
 		if (pta[cnt] != ptv[cnt])
 		{
@@ -142,13 +143,13 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 
 int main(int argc, char **argv)
 {
-	int max = 100000;
+	int max = 1000000;
 	int samples = 1000;
-	int repetitions = 10;
+	int repetitions = 1;
 	int seed = 0;
 	int cnt, left, right;
 	int *a_array, *r_array, *v_array;
-	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "contrev", "grail", "juggling", "triprev" };
+	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "grail", "juggling", "trinity", "reversal" };
 
 	if (argc >= 1 && argv[1] && *argv[1])
 	{
@@ -183,7 +184,7 @@ int main(int argc, char **argv)
 		r_array[cnt] = cnt;
 	}
 
-	for (left = 1 ; left < max / 2 ; left +=  max * 10 / 100 - 1)
+	for (left = 1 ; left < max ; left +=  max * 10 / 100 - 1)
 	{
 		right = max - left;
 

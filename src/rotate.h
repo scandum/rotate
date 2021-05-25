@@ -24,7 +24,7 @@
 */
 
 /*
-	rotate 1.0
+	rotate 1.1
 */
 
 #ifndef ROTATE_H
@@ -145,22 +145,22 @@ void beaker_rotation(int *array, size_t left, size_t right)
 	{
 		if (left <= right)
 		{
-			int swap = array[start];
+			swap = array[start];
 			memmove(&array[start], &array[start + 1], (right) * sizeof(int));
 			array[start + right] = swap;
 		}
 		else
 		{
-			int swap = array[start + left];
+			swap = array[start + left];
 			memmove(&array[start + 1], &array[start], (left) * sizeof(int));
 			array[start] = swap;
 		}
 	}
 }
 
-// conjoined triple reversal rotation
+// conjoined triple reversal aka trinity rotation
 
-void contrev_rotation(int *array, size_t left, size_t right)
+void trinity_rotation(int *array, size_t left, size_t right)
 {
 	if (left < 8 || right < 8)
 	{
@@ -186,19 +186,18 @@ void contrev_rotation(int *array, size_t left, size_t right)
 
 		pta = array;
 		ptb = pta + left;
-
 		ptc = ptb;
 		ptd = ptc + right;
 
-		loop = left < right ? left / 2 : right / 2;
-
-		while (loop--)
-		{
-			swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
-		}
-
 		if (left >= right)
 		{
+			loop = right / 2;
+
+			while (loop--)
+			{
+				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+			}
+
 			loop = (ptb - pta) / 2;
 
 			while (loop--)
@@ -208,6 +207,13 @@ void contrev_rotation(int *array, size_t left, size_t right)
 		}
 		else
 		{
+			loop = left / 2;
+
+			while (loop--)
+			{
+				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+			}
+
 			loop = (ptd - ptc) / 2;
 
 			while (loop--)
@@ -327,7 +333,7 @@ void juggling_rotation(int *array, size_t left, size_t right)
 
 // Classic 3 reversal
 
-void triprev_rotation(int *array, size_t left, size_t right)
+void reversal_rotation(int *array, size_t left, size_t right)
 {
 	block_reversal(array, left);
 	block_reversal(array + left, right);
