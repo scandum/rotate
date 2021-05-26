@@ -22,10 +22,27 @@ Auxiliary Rotation
 This is an easy and fast way to rotate, but since it requires auxiliary memory it is of little interest to in-place algorithms.
 
 Typically the smaller half is copied to swap memory, the larger half is moved, and the swap memory is copied back to the main array.
+```c
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+                             ↑  ↑  ↑  ↑  ↑  ↑    ↓  ↓  ↓  ↓  ↓  ↓
+┌──────────────────────────┬─────────────────┐ ┌─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│                 │ │10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘ └─────────────────┘
+  ↑  ↑  ↑  ↑  ↑  ↑  ⇅  ⇅ ⇅  ↓  ↓  ↓  ↓  ↓  ↓
+┌─────────────────┬──────────────────────────┐ ┌─────────────────┐
+│                 │ 1  2  3  4  5  6  7  8  9│ │10 11 12 13 14 15│
+└─────────────────┴──────────────────────────┘ └─────────────────┘
+  ↓  ↓  ↓  ↓  ↓  ↓                               ↑  ↑  ↑  ↑  ↑  ↑
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
 
 Bentley's Juggling Rotation
 ---------------------------
-Also known as the dolphin algorithm. This is a relatively complex and slow way to rotate in-place. Its first known publication was in 1965.
+Also known as the dolphin algorithm. This is a relatively complex and cache inefficient way to rotate in-place, though it does so in the minimal amount of moves. Its first known publication was in 1965.
 
 It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
@@ -54,13 +71,16 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
+  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓
 ┌──────────────────────────┬─────────────────┐
 │ 9  8  7  6  5  4  3  2  1│15 14 13 12 11 10│
 └──────────────────────────┴─────────────────┘
+  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓
 ┌─────────────────┬──────────────────────────┐
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
+
 Gries-Mills Rotation
 --------------------
 Its first known publication was in 1981. You swap the smallest array to its proper location, since it's in its proper location you can forget about it. The larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements.
