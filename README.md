@@ -29,6 +29,24 @@ Also known as the dolphin algorithm. This is a relatively complex and slow way t
 
 It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
+```c
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+  ↓        ↓        ↓        ↓        ↓
+┌──────────────────────────┬─────────────────┐
+│10  2  3 13  5  6  1  8  9│ 4 11 12  7 14 15│
+└──────────────────────────┴─────────────────┘
+     ↓        ↓        ↓        ↓        ↓
+┌──────────────────────────┬─────────────────┐
+│10 11  3 13 14  6  1  2  9│ 4  5 12  7  8 15│
+└──────────────────────────┴─────────────────┘
+        ↓        ↓        ↓        ↓        ↓
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
+
 Triple Reversal Rotation
 ------------------------
 This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped.
