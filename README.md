@@ -41,6 +41,30 @@ Typically the smaller half is copied to swap memory, the larger half is moved, a
 └─────────────────┴──────────────────────────┘
 ```
 
+Bridge Rotation
+---------------
+This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%.
+
+If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead.
+```c
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+                    ↑  ↑  ↑                      ↓  ↓  ↓
+┌─────────────────┬────────┬─────────────────┐ ┌────────┐
+│ 1  2  3  4  5  6│        │10 11 12 13 14 15│ │ 7  8  9│
+└─────────────────┴────────┴─────────────────┘ └────────┘
+  ↑  ↑  ↑  ↑  ↑  ↑           ↑  ↑  ↑  ↑  ↑  ↑
+  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓
+┌─────────────────┬──────────────────────────┐ ┌────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6         │ │ 7  8  9│
+└─────────────────┴──────────────────────────┘ └────────┘
+                                      ↓  ↓  ↓    ↑  ↑  ↑
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
+
 Bentley's Juggling Rotation
 ---------------------------
 Also known as the dolphin algorithm. This is a relatively complex and cache inefficient way to rotate in-place, though it does so in the minimal amount of moves. Its first known publication was in 1965.
@@ -162,6 +186,7 @@ While performance may vary depending on the specific implemention, from worst to
 * Grail Rotation
 * Beaker Rotation (beaker)
 * Auxiliary Rotation (auxiliary)
+* Bridge Rotation
 * Conjoined Triple Reversal Rotation (trinity)
 
 It should be noted that the auxiliary Rotation performs better for smaller arrays and when the relative size difference between the two halves is large.
