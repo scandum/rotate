@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2014-2021 Igor van den Hoven ivdhoven@gmail.com
+	Copyright (C) 2021 Igor van den Hoven ivdhoven@gmail.coms
 */
 
 /*
@@ -98,6 +98,76 @@ void auxiliary_rotation(int *array, size_t left, size_t right)
 		memmove(ptc, pta, left * sizeof(int));
 
 		memcpy(pta, swap, right * sizeof(int));
+	}
+	free(swap);
+}
+
+void bridge_rotation(int *array, size_t left, size_t right)
+{
+	int *pta, *ptb, *ptc, *ptd, *swap;
+
+	pta = array;
+	ptb = pta + left;
+	ptc = pta + right;
+	ptd = ptc + left;
+
+	if (left < right)
+	{
+		size_t bridge = right - left;
+
+		if (bridge < left)
+		{
+			swap = malloc(bridge * sizeof(int));
+
+			memcpy(swap, ptb, bridge * sizeof(int));
+
+			while (left--)
+			{
+				*--ptc = *--ptd; *ptd = *--ptb;
+			}
+			memcpy(pta, swap, bridge * sizeof(int));
+		}
+		else
+		{
+			swap = malloc(left * sizeof(int));
+			memcpy(swap, pta, left * sizeof(int));
+			memmove(pta, ptb, right * sizeof(int));
+			memcpy(ptc, swap, left * sizeof(int));
+		}
+	}
+	else if (right < left)
+	{
+		size_t bridge = left - right;
+
+		if (bridge < right)
+		{
+			swap = malloc(bridge * sizeof(int));
+			
+			memcpy(swap, ptc, bridge * sizeof(int));
+			
+			while (right--)
+			{
+				*ptc++ = *pta; *pta++ = *ptb++;
+			}
+			memcpy(ptd - bridge, swap, bridge * sizeof(int));
+		}
+		else
+		{
+			swap = malloc(right * sizeof(int));
+			memcpy(swap, ptb, right * sizeof(int));
+			memmove(ptc, pta, left * sizeof(int));
+			memcpy(pta, swap, right * sizeof(int));
+		}
+		
+	}
+	else
+	{
+		swap = malloc(1 * sizeof(int));
+
+		while (left--)
+		{
+			*swap = *pta; *pta++ = *ptb; *ptb++ = *swap;
+		}
 	}
 	free(swap);
 }

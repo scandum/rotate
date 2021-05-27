@@ -87,33 +87,35 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 		{
 			memcpy(array, unsorted, max * size);
 
-			switch (*name)
+			switch (name[0] + name[1])
 			{
-				case 'a':
+				case 'a' + 'u':
 					auxiliary_rotation(array, left, right);
 					break;
 
-				case 'b':
+				case 'b' + 'e':
 					beaker_rotation(array, left, right);
 					break;
 
-				case 'g':
+				case 'b' + 'r':
+					bridge_rotation(array, left, right);
+					break;
+
+				case 'g' + 'r':
 					grail_rotation(array, left, right);
 					break;
 
-				case 'j':
+				case 'j' + 'u':
 					juggling_rotation(array, left, right);
 					break;
 
-				case 'r':
+				case 'r' + 'e':
 					reversal_rotation(array, left, right);
 					break;
 
-				case 't':
+				case 't' + 'r':
 					trinity_rotation(array, left, right);
 					break;
-
-
 			}
 		}
 		end = utime();
@@ -149,7 +151,9 @@ int main(int argc, char **argv)
 	int seed = 0;
 	int cnt, left, right;
 	int *a_array, *r_array, *v_array;
-	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "grail", "juggling", "trinity", "reversal" };
+//	char dist[40], *sorts[] = { "*", "auxiliary", "bridge", "trinity" };
+//	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "trinity", "reversal" };
+	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "bridge", "grail", "juggling", "trinity", "reversal" };
 
 	if (argc >= 1 && argv[1] && *argv[1])
 	{
