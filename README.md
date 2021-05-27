@@ -117,7 +117,7 @@ The beaker rotation is grail derived and uses a modulo computation to minimize t
 
 Conjoined Triple Reversal Rotation
 ----------------------------------
-The conjoined triple reversal rotation (aka trinity rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality. Optionally, if the smallest side is smaller than 8 elements it skips the trinity rotation and performs an auxiliary rotation on stack memory.
+The conjoined triple reversal rotation (aka trinity rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the smallest side is smaller than 8 elements it skips the trinity rotation and performs an auxiliary rotation on stack memory.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
