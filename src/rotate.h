@@ -24,7 +24,7 @@
 */
 
 /*
-	rotate 1.1
+	rotate 1.2
 */
 
 #ifndef ROTATE_H
