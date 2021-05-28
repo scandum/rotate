@@ -228,7 +228,7 @@ void beaker_rotation(int *array, size_t left, size_t right)
 	}
 }
 
-// conjoined triple reversal aka trinity rotation
+// Conjoined Triple Reversal aka Trinity rotation
 
 #define MAX_AUX 8
 

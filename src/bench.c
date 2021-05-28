@@ -151,9 +151,8 @@ int main(int argc, char **argv)
 	int seed = 0;
 	int cnt, left, right;
 	int *a_array, *r_array, *v_array;
-//	char dist[40], *sorts[] = { "*", "auxiliary", "bridge", "trinity" };
-//	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "trinity", "reversal" };
-	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "bridge", "grail", "juggling", "trinity", "reversal" };
+	char dist[40], *sorts[] = { "*", "beaker", "bridge", "trinity", "reversal" };
+//	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "bridge", "grail", "juggling", "trinity", "reversal" };
 
 	if (argc >= 1 && argv[1] && *argv[1])
 	{
