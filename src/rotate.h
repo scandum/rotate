@@ -24,7 +24,7 @@
 */
 
 /*
-	rotate 1.2
+	rotate 1.1
 */
 
 #ifndef ROTATE_H
@@ -230,76 +230,155 @@ void beaker_rotation(int *array, size_t left, size_t right)
 
 // conjoined triple reversal aka trinity rotation
 
+#define MAX_AUX 8
+
 void trinity_rotation(int *array, size_t left, size_t right)
 {
-	if (left < 8 || right < 8)
+	if (left < right)
 	{
-		int swap[7];
-
-		if (left < 8)
+		if (left <= MAX_AUX)
 		{
+			int swap[MAX_AUX];
+
 			memcpy(swap, array, left * sizeof(int));
 			memmove(array, array + left, right * sizeof(int));
 			memcpy(array + right, swap, left * sizeof(int));
 		}
 		else
 		{
+			int *pta, *ptb, *ptc, *ptd;
+			size_t loop;
+
+			pta = array;
+			ptb = pta + left;
+
+			loop = right - left;
+
+			if (loop <= MAX_AUX)
+			{
+				int swap[MAX_AUX];
+
+				ptc = pta + right;
+				ptd = ptc + left;
+
+				memcpy(swap, ptb, loop * sizeof(int));
+
+				while (left--)
+				{
+					*--ptc = *--ptd; *ptd = *--ptb;
+				}
+				memcpy(pta, swap, loop * sizeof(int));
+			}
+			else
+			{
+				int swap;
+
+				ptc = ptb;
+				ptd = ptc + right;
+
+				loop = left / 2;
+
+				while (loop--)
+				{
+					swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+				}
+
+				loop = (ptd - ptc) / 2;
+
+				while (loop--)
+				{
+					swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = swap;
+				}
+
+				loop = (ptd - pta) / 2;
+
+				while (loop--)
+				{
+					swap = *pta; *pta++ = *--ptd; *ptd = swap;
+				}
+			}
+		}
+	}
+	else if (right < left)
+	{
+		if (right <= MAX_AUX)
+		{
+			int swap[MAX_AUX];
+
 			memcpy(swap, array + left, right * sizeof(int));
 			memmove(array + right, array, left * sizeof(int));
 			memcpy(array, swap, right * sizeof(int));
 		}
+		else
+		{
+			int *pta, *ptb, *ptc, *ptd;
+			size_t loop;
+
+			pta = array;
+			ptb = pta + left;
+
+			loop = left - right;
+
+			if (loop <= MAX_AUX)
+			{
+				int swap[MAX_AUX];
+
+				ptc = pta + right;
+				ptd = ptc + left;
+
+				memcpy(swap, ptc, loop * sizeof(int));
+			
+				while (right--)
+				{
+					*ptc++ = *pta; *pta++ = *ptb++;
+				}
+				memcpy(ptd - loop, swap, loop * sizeof(int));
+			}
+			else
+			{
+				int swap;
+
+				ptc = ptb;
+				ptd = ptc + right;
+
+				loop = right / 2;
+
+				while (loop--)
+				{
+					swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+				}
+
+				loop = (ptb - pta) / 2;
+
+				while (loop--)
+				{
+					swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = swap;
+				}
+
+				loop = (ptd - pta) / 2;
+
+				while (loop--)
+				{
+					swap = *pta; *pta++ = *--ptd; *ptd = swap;
+				}
+			}
+		}
 	}
 	else
 	{
-		int *pta, *ptb, *ptc, *ptd, swap;
-		size_t loop;
+		int *pta, *ptb, swap;
 
 		pta = array;
 		ptb = pta + left;
-		ptc = ptb;
-		ptd = ptc + right;
 
-		if (left >= right)
+		while (left--)
 		{
-			loop = right / 2;
-
-			while (loop--)
-			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
-			}
-
-			loop = (ptb - pta) / 2;
-
-			while (loop--)
-			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = swap;
-			}
-		}
-		else
-		{
-			loop = left / 2;
-
-			while (loop--)
-			{
-				swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
-			}
-
-			loop = (ptd - ptc) / 2;
-
-			while (loop--)
-			{
-				swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = swap;
-			}
-		}
-
-		loop = (ptd - pta) / 2;
-
-		while (loop--)
-		{
-			swap = *pta; *pta++ = *--ptd; *ptd = swap;
+			swap = *pta; *pta++ = *ptb; *ptb++ = swap;
 		}
 	}
 }
+
+#undef MAX_AUX
 
 // Gries-Mills derived, based on the java implementation from the Holy Grail Sort project
 
