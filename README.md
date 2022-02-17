@@ -155,8 +155,21 @@ The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and t
 
 Beaker Rotation
 ---------------
-The beaker rotation is grail derived and uses a modulo computation to minimize the number of loops. This improves performance when the relative size difference between the two halves is large.
-
+The beaker rotation is grail derived and uses a somewhat counter-intuitive mechanism to merge two nested loops into a single loop. This significantly improves performance when the relative size difference between the two halves is large.
+```
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+  ┌──┬──┬──┬──┬──┬───────────┴──┴──┴──┴──┴──┘
+┌─────────────────┬────────┬─────────────────┐
+│10 11 12 13 14 15│ 7  8  9│ 1  2  3  4  5  6│
+└─────────────────┴────────┴─────────────────┘
+                    └──┴──┴──┬──┬──┐
+                             └──┴──┴──┬──┬──┐
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
 Conjoined Triple Reversal Rotation
 ----------------------------------
 The conjoined triple reversal rotation (aka trinity rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if one side is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary rotation on stack memory.
