@@ -155,17 +155,17 @@ The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and t
 
 Beaker Rotation
 ---------------
-The beaker rotation is grail derived and uses a somewhat counter-intuitive mechanism to merge two nested loops into a single loop. This significantly improves performance when the relative size difference between the two halves is large.
+The beaker rotation has similarities with the grail rotation but will swap multiple blocks at once when possible. The two nested loops to swap multiple blocks can be merged into a single loop, significantly improving performance when the relative size difference between the two halves is large. The mechanism to merge two loops is somewhat counter-intuitive and might be novel.
 ```
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
-  ┌──┬──┬──┬──┬──┬───────────┴──┴──┴──┴──┴──┘
-┌─────────────────┬────────┬─────────────────┐
-│10 11 12 13 14 15│ 7  8  9│ 1  2  3  4  5  6│
-└─────────────────┴────────┴─────────────────┘
-                    └──┴──┴──┬──┬──┐
-                             └──┴──┴──┬──┬──┐
+           ┌──┬──┬──┬──┬──┬──┴──┴──┴──┴──┴──┘
+┌────────┬─────────────────┬─────────────────┐
+│ 1  2  3│10 11 12 13 14 15│ 4  5  6  7  8  9│
+└────────┴─────────────────┴─────────────────┘
+  └──┴──┴──┬──┬──┐
+           └──┴──┴──┬──┬──┐
 ┌─────────────────┬──────────────────────────┐
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
@@ -208,7 +208,7 @@ The conjoined triple reversal rotation (aka trinity rotation) is derived from th
 ```
 Benchmarks
 ----------
-Since the juggling rotation is rather slow and the auxiliary/bridge and grail/beaker rotations are fairly similar I've omitted the auxiliary, juggling and grail rotations from the benchmark graph.
+Since the juggling rotation is rather slow and the auxiliary/bridge rotations are fairly similar I've omitted the juggling and auxiliary rotations from the benchmark graph. Similarly the grail rotation has been omitted since it's fundamentally slower than the beaker rotation.
 
 While performance may vary depending on the specific implemention, from worst to best the order is:
 
