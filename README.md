@@ -89,7 +89,7 @@ If the overlap between the two halves is smaller than the halves themselves it c
 
 Bentley's Juggling Rotation
 ---------------------------
-Also known as the dolphin algorithm. This is a relatively complex and cache inefficient way to rotate in-place, though it does so in the minimal amount of moves. Its first known publication was in 1965.
+Also known as the dolphin algorithm. This is a relatively complex and cache inefficient way to rotate in-place, though it does so in the minimal number of moves. Its first known publication was in 1965.
 
 It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
@@ -113,7 +113,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 
 Triple Reversal Rotation
 ------------------------
-This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There no known first publication.
+This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There's no known first publication.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -134,7 +134,7 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 
 Gries-Mills Rotation
 --------------------
-Its first known publication was in 1981. You swap the smallest array to its proper location, since it's in its proper location you can forget about it. The larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements.
+In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array to its proper location, since it's in its proper location you can forget about it. The larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981. 
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -155,7 +155,7 @@ Its first known publication was in 1981. You swap the smallest array to its prop
 
 Grail Rotation
 --------------
-The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element.
+The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element, which is the worst case for the Gries-Mills rotation.
 
 Beaker Rotation
 ---------------
@@ -177,7 +177,7 @@ The beaker rotation has similarities with the Gries-Mills rotation but has a dis
 
 Trinity Rotation
 ----------------
-The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021.
+The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
