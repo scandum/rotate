@@ -1,6 +1,6 @@
 The most commonly used rotation algorithms (aka block swaps) were documented around 1981 and haven't notably changed since.
 
-Below I'll describe several variants, notably the conjoined triple reversal, followed by a benchmark graph.
+Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the trinity rotation, followed by a benchmark graph.
 
 Introduction to rotating
 ------------------------
@@ -42,7 +42,7 @@ Typically the smaller half is copied to swap memory, the larger half is moved, a
 
 Bridge Rotation
 ---------------
-This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%.
+This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%. Its first known publication was in 2021.
 
 If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead.
 ```c
@@ -109,7 +109,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 
 Triple Reversal Rotation
 ------------------------
-This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped.
+This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There no known first publication.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -155,7 +155,7 @@ The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and t
 
 Beaker Rotation
 ---------------
-The beaker rotation has similarities with the grail rotation but will swap multiple blocks at once when possible. The two nested loops to swap multiple blocks can be merged into a single loop, significantly improving performance when the relative size difference between the two halves is large. The mechanism to merge two loops is somewhat counter-intuitive and might be novel.
+The beaker rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. Unlike the Gries-Mills rotation the two loops can be merged into a single loop, significantly improving performance when the relative size difference between the two halves is large. The utilization of the merged loops is counter-intuitive and might be novel. Its first known publication was in 2021.
 ```
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -170,9 +170,10 @@ The beaker rotation has similarities with the grail rotation but will swap multi
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
-Conjoined Triple Reversal Rotation
-----------------------------------
-The conjoined triple reversal rotation (aka trinity rotation) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if one side is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary rotation on stack memory.
+
+Trinity Rotation
+----------------
+The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three seperate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -206,6 +207,7 @@ The conjoined triple reversal rotation (aka trinity rotation) is derived from th
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
+
 Benchmarks
 ----------
 Since the juggling rotation is rather slow and the auxiliary/bridge rotations are fairly similar I've omitted the juggling and auxiliary rotations from the benchmark graph. Similarly the grail rotation has been omitted since it's fundamentally slower than the beaker rotation.
@@ -218,7 +220,7 @@ While performance may vary depending on the specific implemention, from worst to
 * Beaker Rotation (beaker)
 * Auxiliary Rotation
 * Bridge Rotation (bridge)
-* Conjoined Triple Reversal Rotation (trinity)
+* Trinity Rotation (trinity)
 
 It should be noted that the auxiliary Rotation performs better for smaller arrays and when the relative size difference between the two halves is large.
 
