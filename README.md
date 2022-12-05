@@ -10,7 +10,7 @@ A rotation is to swap the left side of an array with the right side.
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
 ```
-It's a common operation in a variety of sorting algorithms. After the rotation the data is as following.
+After the rotation the data is as following.
 ```c
 ┌─────────────────┬──────────────────────────┐
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
