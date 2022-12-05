@@ -17,6 +17,10 @@ It's a common operation in a variety of sorting algorithms. After the rotation t
 └─────────────────┴──────────────────────────┘
 ```
 
+Utility of rotating
+-------------------
+According to Sean Parent rotations are a very common operation: https://www.youtube.com/watch?v=UZmeDQL4LaE
+
 Auxiliary Rotation
 ------------------
 This is an easy and fast way to rotate, but since it requires auxiliary memory it is of little interest to in-place algorithms.
