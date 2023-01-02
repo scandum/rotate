@@ -24,24 +24,41 @@
 */
 
 /*
-	rotate 1.1
+	rotate 1.2
 */
 
 #ifndef ROTATE_H
 #define ROTATE_H
 
-void block_reversal(int *array, size_t block_size)
+void outsidein_reversal(int *array, size_t block_size)
 {
 	int *pta, *ptb, swap;
 
 	pta = array;
-	ptb = array + block_size - 1;
+	ptb = array + block_size;
 
 	block_size /= 2;
 
 	while (block_size--)
 	{
-		swap = *pta; *pta++ = *ptb; *ptb-- = swap;
+		swap = *pta; *pta++ = *--ptb; *ptb = swap;
+	}
+}
+
+void insideout_reversal(int *array, size_t block_size)
+{
+	int *pta, *ptb, swap;
+
+	ptb = array + block_size;
+
+	block_size /= 2;
+
+	pta = array + block_size;
+	ptb -= block_size;
+
+	while (block_size--)
+	{
+		swap = *--pta; *pta = *ptb; *ptb++ = swap;
 	}
 }
 
@@ -101,6 +118,17 @@ void auxiliary_rotation(int *array, size_t left, size_t right)
 	}
 	free(swap);
 }
+
+// 3 reversal - Origin unknown, but prior to 1981
+
+void reversal_rotation(int *array, size_t left, size_t right)
+{
+	outsidein_reversal(array, left);
+	outsidein_reversal(array + left, right);
+	outsidein_reversal(array, left + right);
+}
+
+// 2021 - Bridge rotation by Igor van den Hoven
 
 void bridge_rotation(int *array, size_t left, size_t right)
 {
@@ -172,92 +200,102 @@ void bridge_rotation(int *array, size_t left, size_t right)
 	free(swap);
 }
 
-// Gries-Mills / Holy Grail derived, based on the java implementation by Control
+// 2021 - Conjoined Triple Reversal rotation by Igor van den Hoven
 
-void beaker_rotation(int *array, size_t left, size_t right)
+void contrev_rotation(int *array, size_t left, size_t right)
 {
-	int swap;
-	size_t start = 0;
-	size_t end = left + right;
-	size_t mid = left;
+	int *pta, *ptb, *ptc, *ptd, swap;
 	size_t loop;
 
-	while (left > 1)
+	pta = array;
+	ptb = array + left;
+	ptc = array + left;
+	ptd = array + left + right;
+
+	if (left > right)
 	{
-		if (left <= right)
-		{
-			right %= left;
-			loop = end - mid - right;
+		loop = right / 2;
 
-			do
-			{
-				swap = array[mid]; array[mid++] = array[start]; array[start++] = swap;
-			}
-			while (--loop);
+		while (loop--)
+		{
+			swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
 		}
 
-		if (right <= 1)
+		loop = (ptb - pta) / 2;
+
+		while (loop--)
 		{
-			break;
+			swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = swap;
+		}
+		loop = (ptd - pta) / 2;
+
+		while (loop--)
+		{
+			swap = *pta; *pta++ = *--ptd; *ptd = swap;
+		}
+	}
+	else if (left < right)
+	{
+		loop = left / 2;
+
+		while (loop--)
+		{
+			swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
 		}
 
-		left %= right;
-		loop = mid - start - left;
+		loop = (ptd - ptc) / 2;
+
+		while (loop--)
+		{
+			swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = swap;
+		}
+		loop = (ptd - pta) / 2;
+
+		while (loop--)
+		{
+			swap = *pta; *pta++ = *--ptd; *ptd = swap;
+		}
+	}
+	else
+	{
+		loop = left;
 
 		do
 		{
-			swap = array[--mid]; array[mid] = array[--end]; array[end] = swap;
+			swap = *pta; *pta++ = *ptb; *ptb++ = swap;
 		}
 		while (--loop);
-	}
 
-	if (left && right)
-	{
-		if (left <= right)
-		{
-			swap = array[start];
-			memmove(&array[start], &array[start + 1], (right) * sizeof(int));
-			array[start + right] = swap;
-		}
-		else
-		{
-			swap = array[start + left];
-			memmove(&array[start + 1], &array[start], (left) * sizeof(int));
-			array[start] = swap;
-		}
+		return;
 	}
 }
 
-// Conjoined Triple Reversal aka Trinity rotation
+// 2021 - Trinity rotation by Igor van den Hoven (Conjoined Triple Reversal + Bridge rotation)
 
-#define MAX_AUX 8
+#define MAX_AUX 16
 
 void trinity_rotation(int *array, size_t left, size_t right)
 {
+	int *pta, *ptb, *ptc, *ptd, swap[MAX_AUX];
+	size_t loop;
+
 	if (left < right)
 	{
 		if (left <= MAX_AUX)
 		{
-			int swap[MAX_AUX];
-
 			memcpy(swap, array, left * sizeof(int));
 			memmove(array, array + left, right * sizeof(int));
 			memcpy(array + right, swap, left * sizeof(int));
 		}
 		else
 		{
-			int *pta, *ptb, *ptc, *ptd;
-			size_t loop;
-
 			pta = array;
 			ptb = pta + left;
 
 			loop = right - left;
 
-			if (loop <= MAX_AUX)
+			if (loop <= MAX_AUX && loop > 3)
 			{
-				int swap[MAX_AUX];
-
 				ptc = pta + right;
 				ptd = ptc + left;
 
@@ -271,8 +309,6 @@ void trinity_rotation(int *array, size_t left, size_t right)
 			}
 			else
 			{
-				int swap;
-
 				ptc = ptb;
 				ptd = ptc + right;
 
@@ -280,21 +316,21 @@ void trinity_rotation(int *array, size_t left, size_t right)
 
 				while (loop--)
 				{
-					swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
 				}
 
 				loop = (ptd - ptc) / 2;
 
 				while (loop--)
 				{
-					swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = swap;
+					*swap = *ptc; *ptc++ = *--ptd; *ptd = *pta; *pta++ = *swap;
 				}
 
 				loop = (ptd - pta) / 2;
 
 				while (loop--)
 				{
-					swap = *pta; *pta++ = *--ptd; *ptd = swap;
+					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
 				}
 			}
 		}
@@ -303,26 +339,19 @@ void trinity_rotation(int *array, size_t left, size_t right)
 	{
 		if (right <= MAX_AUX)
 		{
-			int swap[MAX_AUX];
-
 			memcpy(swap, array + left, right * sizeof(int));
 			memmove(array + right, array, left * sizeof(int));
 			memcpy(array, swap, right * sizeof(int));
 		}
 		else
 		{
-			int *pta, *ptb, *ptc, *ptd;
-			size_t loop;
-
 			pta = array;
 			ptb = pta + left;
 
 			loop = left - right;
 
-			if (loop <= MAX_AUX)
+			if (loop <= MAX_AUX && loop > 3)
 			{
-				int swap[MAX_AUX];
-
 				ptc = pta + right;
 				ptd = ptc + left;
 
@@ -336,8 +365,6 @@ void trinity_rotation(int *array, size_t left, size_t right)
 			}
 			else
 			{
-				int swap;
-
 				ptc = ptb;
 				ptd = ptc + right;
 
@@ -345,42 +372,72 @@ void trinity_rotation(int *array, size_t left, size_t right)
 
 				while (loop--)
 				{
-					swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = swap;
+					*swap = *--ptb; *ptb = *pta; *pta++ = *ptc; *ptc++ = *--ptd; *ptd = *swap;
 				}
 
 				loop = (ptb - pta) / 2;
 
 				while (loop--)
 				{
-					swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = swap;
+					*swap = *--ptb; *ptb = *pta; *pta++ = *--ptd; *ptd = *swap;
 				}
 
 				loop = (ptd - pta) / 2;
 
 				while (loop--)
 				{
-					swap = *pta; *pta++ = *--ptd; *ptd = swap;
+					*swap = *pta; *pta++ = *--ptd; *ptd = *swap;
 				}
 			}
 		}
 	}
 	else
 	{
-		int *pta, *ptb, swap;
-
 		pta = array;
 		ptb = pta + left;
 
 		while (left--)
 		{
-			swap = *pta; *pta++ = *ptb; *ptb++ = swap;
+			*swap = *pta; *pta++ = *ptb; *ptb++ = *swap;
 		}
 	}
 }
 
 #undef MAX_AUX
 
-// Gries-Mills derived, based on the java implementation from the Holy Grail Sort project
+// 1981 - Gries-Mills rotation by David Gries and Harlan Mills
+
+void griesmills_rotation(int *array, size_t left, size_t right)
+{
+	size_t start = 0;
+
+	while (left && right)
+	{
+		if (left <= right)
+		{
+			do
+			{
+				forward_block_swap(array, start, start + left, left);
+
+				start += left;
+				right -= left;
+			}
+			while (left <= right);
+		}
+		else
+		{
+			do
+			{
+				forward_block_swap(array, start + left - right, start + left, right);
+
+				left -= right;
+			}
+			while (right <= left);
+		}
+	}
+}
+
+// 2020 - Grail rotation by the Holy Grail Sort project (Gries-Mills derived)
 
 void grail_rotation(int *array, size_t left, size_t right)
 {
@@ -418,22 +475,133 @@ void grail_rotation(int *array, size_t left, size_t right)
 
 	if (min)
 	{
-		if (left <= right)
-		{
-			int swap = array[start];
-			memmove(&array[start], &array[start + 1], (right) * sizeof(int));
-			array[start + right] = swap;
-		}
-		else
-		{
-			int swap = array[start + left];
-			memmove(&array[start + 1], &array[start], (left) * sizeof(int));
-			array[start] = swap;
-		}
+		auxiliary_rotation(array + start, left, right);
 	}
 }
 
-// Juggling / Dolphin rotation
+// 2021 - Piston rotation by Igor van den Hoven. Based on the successive swap described by Gries and Mills in 1981.
+
+void piston_rotation(int *array, size_t left, size_t right)
+{
+	size_t start = 0;
+
+	while (left > 0)
+	{
+		while (left <= right)
+		{
+			forward_block_swap(array, start, start + right, left);
+			right -= left;
+		}
+		if (right <= 0)
+		{
+			break;
+		}
+		do
+		{
+			forward_block_swap(array, start, start + left, right);
+			left -= right;
+			start += right;
+		}
+		while (right <= left);
+	}
+
+/*	if (left && right)
+	{
+		auxiliary_rotation(array + start, left, right);
+	}*/
+}
+
+// 2021 - Helix rotation by Control (Grail derived)
+
+void helix_rotation(int *array, size_t left, size_t right)
+{
+	int swap;
+	size_t start = 0;
+	size_t end = left + right;
+	size_t mid = left;
+
+	while (1)
+	{
+		if (left > right)
+		{
+			if (right <= 1)
+			{
+				break;
+			}
+
+			while (mid > start)
+			{
+				swap = array[--mid]; array[mid] = array[--end]; array[end] = swap;
+			}
+			mid += (left %= right);
+			right = end - mid;
+		}
+		else
+		{
+			if (left <= 1)
+			{	
+				break;
+			}
+
+			while (mid < end)
+			{
+				swap = array[mid]; array[mid++] = array[start]; array[start++] = swap;
+			}
+			mid -= (right %= left);
+			left = mid - start;
+		}
+	}
+
+	if (left && right)
+	{
+		auxiliary_rotation(array + start, left, right);
+	}
+}
+
+// 2021 - Drill rotation by Igor van den Hoven (Grail derived with helix swaps and piston loop)
+
+void drill_rotation(int *array, size_t left, size_t right)
+{
+	int swap;
+	size_t start = 0;
+	size_t end = left + right;
+	size_t mid = left;
+	size_t loop;
+
+	while (left > 512)
+	{
+		if (left <= right)
+		{
+			loop = end - mid - (right %= left);
+
+			do
+			{
+				swap = array[mid]; array[mid++] = array[start]; array[start++] = swap;
+			}
+			while (--loop);
+		}
+
+		if (right <= 512)
+		{
+			break;
+		}
+
+		loop = mid - start - (left %= right);
+
+		do
+		{
+			swap = array[--mid]; array[mid] = array[--end]; array[end] = swap;
+		}
+		while (--loop);
+	}
+
+	if (left && right)
+	{
+		auxiliary_rotation(array + start, left, right);
+	}
+}
+
+// 1965 - Juggling aka Dolphin rotation
 
 int gcd(int a, int b)
 {
@@ -478,15 +646,6 @@ void juggling_rotation(int *array, size_t left, size_t right)
 		}
 		*pta = swap;
 	}
-}
-
-// Classic 3 reversal
-
-void reversal_rotation(int *array, size_t left, size_t right)
-{
-	block_reversal(array, left);
-	block_reversal(array + left, right);
-	block_reversal(array, left + right);
 }
 
 #endif

@@ -52,8 +52,11 @@ long long utime()
 	return now_time.tv_sec * 1000000LL + now_time.tv_usec;
 }
 
+typedef void ROTATEFUNC(int *array, size_t left, size_t right);
+
 void test_sort(void *array, void *unsorted, void *valid, int max, int samples, int repetitions, int left, int right, const char *name, char *desc, size_t size)
 {
+	ROTATEFUNC *rotate;
 	long long start, end, total, best, average;
 	size_t rep, sam;
 	int *pta = (int *) array, *ptv = (int *) valid, cnt;
@@ -75,6 +78,57 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 		return;
 	}
 
+	switch (name[0] + name[1] * 128 + name[2] * 16384)
+	{
+		case 'a' + 'u' * 128 + 'x' * 16384:
+			rotate = auxiliary_rotation;
+			break;
+
+		case 'b' + 'r' * 128 + 'i' * 16384:
+			rotate = bridge_rotation;
+			break;
+
+		case 'c' + 'o' * 128 + 'n' * 16384:
+			rotate = contrev_rotation;
+			break;
+
+		case 'd' + 'r' * 128 + 'i' * 16384:
+			rotate = drill_rotation;
+			break;
+
+		case 'g' + 'r' * 128 + 'a' * 16384:
+			rotate = grail_rotation;
+			break;
+
+		case 'g' + 'r' * 128 + 'i' * 16384:
+			rotate = griesmills_rotation;
+			break;
+
+		case 'h' + 'e' * 128 + 'l' * 16384:
+			rotate = helix_rotation;
+			break;
+	
+		case 'j' + 'u' * 128 + 'g' * 16384:
+			rotate = juggling_rotation;
+			break;
+
+		case 'p' + 'i' * 128 + 's' * 16384:
+			rotate = piston_rotation;
+			break;
+
+		case 'r' + 'e' * 128 + 'v' * 16384:
+			rotate = reversal_rotation;
+			break;
+
+		case 't' + 'r' * 128 + 'i' * 16384:
+			rotate = trinity_rotation;
+			break;
+
+		default:
+			printf("Unknown rotation: (%s). Valid rotations are: auxiliary, bridge, contrev, drill, grail, griesmills, helix, juggling, piston, reversal, trinity\n", name);
+			return;
+	}
+
 	best = average = 0;
 
 	for (sam = 0 ; sam < samples ; sam++)
@@ -87,36 +141,7 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 		{
 			memcpy(array, unsorted, max * size);
 
-			switch (name[0] + name[1])
-			{
-				case 'a' + 'u':
-					auxiliary_rotation(array, left, right);
-					break;
-
-				case 'b' + 'e':
-					beaker_rotation(array, left, right);
-					break;
-
-				case 'b' + 'r':
-					bridge_rotation(array, left, right);
-					break;
-
-				case 'g' + 'r':
-					grail_rotation(array, left, right);
-					break;
-
-				case 'j' + 'u':
-					juggling_rotation(array, left, right);
-					break;
-
-				case 'r' + 'e':
-					reversal_rotation(array, left, right);
-					break;
-
-				case 't' + 'r':
-					trinity_rotation(array, left, right);
-					break;
-			}
+			rotate(array, left, right);
 		}
 		end = utime();
 
@@ -146,13 +171,14 @@ void test_sort(void *array, void *unsorted, void *valid, int max, int samples, i
 int main(int argc, char **argv)
 {
 	int max = 1000000;
-	int samples = 1000;
+	int samples = 200;
 	int repetitions = 1;
 	int seed = 0;
-	int cnt, left, right;
+	int cnt, left, right, index;
 	int *a_array, *r_array, *v_array;
-	char dist[40], *sorts[] = { "*", "beaker", "bridge", "trinity", "reversal" };
-//	char dist[40], *sorts[] = { "*", "auxiliary", "beaker", "bridge", "grail", "juggling", "trinity", "reversal" };
+	char dist[40], *sorts[] = { "*", "bridge", "helix", "trinity", "reversal" };
+//	char dist[40], *sorts[] = { "*", "contrev", "piston", "griesmills", "juggler" };
+//	char dist[40], *sorts[] = { "*", "auxiliary", "bridge", "contrev", "drill", "grail", "griesmills", "helix", "juggling", "piston", "reversal", "trinity" };
 
 	if (argc >= 1 && argv[1] && *argv[1])
 	{
@@ -187,7 +213,75 @@ int main(int argc, char **argv)
 		r_array[cnt] = cnt;
 	}
 
-	for (left = 1 ; left < max ; left +=  max * 10 / 100 - 1)
+	int values[] = { 1, 1000, 99999, 199998, 299997, 399996, 499995, 0};
+
+	for (index = 0 ; values[index] != 0 ; index++)
+	{
+		left = values[index];
+
+		right = max - left;
+
+		memcpy(v_array, r_array, max * sizeof(int));
+
+		auxiliary_rotation(v_array, left, right);
+
+		sprintf(dist, "%d/%d", left, right);
+
+		for (cnt = 0 ; cnt < sizeof(sorts) / sizeof(char *) ; cnt++)
+		{
+			test_sort(a_array, r_array, v_array, max, samples, repetitions, left, right, sorts[cnt], dist, sizeof(int));
+		}
+	}
+  
+	for (left = 1 ; left <= 9 ; left ++)
+	{
+		right = max - left;
+
+		memcpy(v_array, r_array, max * sizeof(int));
+
+		auxiliary_rotation(v_array, left, right);
+
+		sprintf(dist, "%d/%d", left, right);
+
+		for (cnt = 0 ; cnt < sizeof(sorts) / sizeof(char *) ; cnt++)
+		{
+			test_sort(a_array, r_array, v_array, max, samples, repetitions, left, right, sorts[cnt], dist, sizeof(int));
+		}
+	}
+
+	for (left = max / 3 ; left < max / 3 + 5 ; left++)
+	{
+		right = max - left;
+
+		memcpy(v_array, r_array, max * sizeof(int));
+
+		auxiliary_rotation(v_array, left, right);
+
+		sprintf(dist, "%d/%d", left, right);
+
+		for (cnt = 0 ; cnt < sizeof(sorts) / sizeof(char *) ; cnt++)
+		{
+			test_sort(a_array, r_array, v_array, max, samples, repetitions, left, right, sorts[cnt], dist, sizeof(int));
+		}
+	}
+
+	for (left = max / 2 ; left < max / 2 + 9 ; left++)
+	{
+		right = max - left;
+
+		memcpy(v_array, r_array, max * sizeof(int));
+
+		auxiliary_rotation(v_array, left, right);
+
+		sprintf(dist, "%d/%d", left, right);
+
+		for (cnt = 0 ; cnt < sizeof(sorts) / sizeof(char *) ; cnt++)
+		{
+			test_sort(a_array, r_array, v_array, max, samples, repetitions, left, right, sorts[cnt], dist, sizeof(int));
+		}
+	}
+
+	for (left = max * 10 / 100 - 1 ; left < max ; left +=  max * 10 / 100 - 1)
 	{
 		right = max - left;
 
