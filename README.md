@@ -1,6 +1,6 @@
 The most commonly used rotation algorithms (aka block swaps) were documented around 1981 and haven't notably changed since.
 
-Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the trinity rotation, followed by a benchmark graph.
+Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the [trinity rotation](https://github.com/scandum/rotate#Trinity-Rotation), followed by a [benchmarks](https://github.com/scandum/rotate#Benchmarks).
 
 Introduction to rotating
 ------------------------
@@ -43,6 +43,8 @@ Typically the smaller half is copied to swap memory, the larger half is moved, a
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
+
+[![auxiliary rotation](/images/auxiliary.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=0s)
 
 Bridge Rotation
 ---------------
@@ -87,9 +89,11 @@ If the overlap between the two halves is smaller than the halves themselves it c
 └─────────────────┴──────────────────────────┘
 ```
 
-Bentley's Juggling Rotation
----------------------------
-Also known as the dolphin algorithm. This is a relatively complex and cache inefficient way to rotate in-place, though it does so in the minimal number of moves. Its first known publication was in 1965.
+[![bridge rotation](/images/bridge.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=0s)
+
+Juggling Rotation
+-----------------
+Also known as the dolphin algorithm. This is a relatively complex and inefficient way to rotate in-place, though it does so in the minimal number of moves. Its first known publication was in 1965.
 
 It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
@@ -110,6 +114,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
+[![juggling rotation](/images/juggling.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=119s)
 
 Triple Reversal Rotation
 ------------------------
@@ -132,9 +137,35 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 └─────────────────┴──────────────────────────┘
 ```
 
+[![reversal rotation](/images/reversal.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=23s)
+
 Gries-Mills Rotation
 --------------------
-In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array to its proper location, since it's in its proper location you can forget about it. The larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981. 
+In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981. 
+```c
+┌──────────────────────────┬─────────────────┐
+│ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
+└──────────────────────────┴─────────────────┘
+           ┌──┬──┬──┬──┬──┬──┴──┴──┴──┴──┴──┘
+┌────────┬─────────────────┬─────────────────┐
+│ 1  2  3│10 11 12 13 14 15│ 4  5  6  7  8  9│
+└────────┴─────────────────┴─────────────────┘
+  └──┴──┴──┬──┬──┐
+┌────────┬────────┬──────────────────────────┐
+│10 11 12│ 1  2  3│13 14 15  4  5  6  7  8  9│
+└────────┴────────┴──────────────────────────┘
+           └──┴──┴──┬──┬──┐
+┌─────────────────┬──────────────────────────┐
+│10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
+```
+
+[![griesmills rotation](/images/griesmills.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=47s)
+
+Successive Rotation
+-------------------
+First described by Gries and Mills in 1981, this rotation is very similar to the Gries-Mills rotation but performs non-linear swaps. It is implemented as the Piston Rotation in the benchmark, named after a loop optimization that removes up to `log n` branch mispredictions by block swapping in pairs of two.
+
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -153,14 +184,18 @@ In some cases this rotation outperforms the classic triple reversal rotation whi
 └─────────────────┴──────────────────────────┘
 ```
 
+[![piston rotation](/images/piston.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=87s)
+
 Grail Rotation
 --------------
-The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element, which is the worst case for the Gries-Mills rotation.
+The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element, which is the worst case for the Gries-Mills rotation. The flow diagram is identical to that of Gries-Mills, but due to memory being shifted from the right the visualization differs.
 
-Beaker Rotation
+[![grail rotation](/images/grail.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=67s)
+
+Helix Rotation
 ---------------
-The beaker rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. Unlike the Gries-Mills rotation the two loops can be merged into a single loop, significantly improving performance when the relative size difference between the two halves is large. The utilization of the merged loops is counter-intuitive and might be novel. Its first known publication was in 2021.
-```
+The helix rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. It is an improvement upon the Grail rotation by merging the two inner loops into a single loop, significantly improving performance when the relative size difference between the two halves is large. In addition it doesn't stop when the smallest block no longer fits, but continues and recalculates the left or right side. The utilization of the merged loops is counter-intuitive and is likely novel. Its first known publication was in 2021.
+```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
 └──────────────────────────┴─────────────────┘
@@ -168,16 +203,21 @@ The beaker rotation has similarities with the Gries-Mills rotation but has a dis
 ┌────────┬─────────────────┬─────────────────┐
 │ 1  2  3│10 11 12 13 14 15│ 4  5  6  7  8  9│
 └────────┴─────────────────┴─────────────────┘
+  ┌──┬──┬───────────┴──┴──┘
+┌─────────────────┬──────────────────────────┐
+│13 14 15 10 11 12│ 1  2  3  4  5  6  7  8  9│
+└─────────────────┴──────────────────────────┘
   └──┴──┴──┬──┬──┐
-           └──┴──┴──┬──┬──┐
 ┌─────────────────┬──────────────────────────┐
 │10 11 12 13 14 15│ 1  2  3  4  5  6  7  8  9│
 └─────────────────┴──────────────────────────┘
 ```
 
+[![helix rotation](/images/helix.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=108s)
+
 Trinity Rotation
 ----------------
-The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021.
+The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Control from the Holy Grail Sort Project.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -212,76 +252,110 @@ The trinity rotation (aka conjoined triple reversal) is derived from the triple 
 └─────────────────┴──────────────────────────┘
 ```
 
+[![trinity rotation](/images/trinity.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=35s)
+
 Benchmarks
 ----------
-Since the juggling rotation is rather slow and the auxiliary/bridge rotations are fairly similar I've omitted the juggling and auxiliary rotations from the benchmark graph. Similarly the grail rotation has been omitted since it's fundamentally slower than the beaker rotation.
+Since the auxiliary/bridge rotations are fairly similar I've omitted the auxiliary rotation from the benchmark graph. Similarly the grail rotation has been omitted since it's fundamentally slower than the helix rotation. The contrev rotation is the trinity rotation without auxiliary memory.
 
-While performance may vary depending on the specific implemention, from worst to best the order is:
+While performance may vary depending on the specific implemention and array size, from worst to best the order is:
 
-* Bentley's Juggling Rotation
-* Triple Reversal Rotation (reversal)
-* Grail Rotation
-* Beaker Rotation (beaker)
+* Juggling Rotation (juggling)
 * Auxiliary Rotation
+* Gries-Mills Rotation (griesmills)
+* Piston Rotation (piston)
+* Grail Rotation
 * Bridge Rotation (bridge)
+* Triple Reversal Rotation (reversal)
+* Helix Rotation (helix)
 * Trinity Rotation (trinity)
 
 It should be noted that the auxiliary Rotation performs better for smaller arrays and when the relative size difference between the two halves is large.
 
 The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 bench.c`. Each test was ran 1,000 times with the time (in seconds) reported of the best and average run.
 
-![rotation graph](/graph1.png)
+![rotation graph](/images/bridge_helix_trinity_reversal.png)
 
 <details><summary><b>data table</b></summary>
 
 |      Name |    Items | Type |     Best |  Average |     Loops | Samples |     Distribution |
 | --------- | -------- | ---- | -------- | -------- | --------- | ------- | ---------------- |
-| auxiliary |  1000000 |   32 | 0.000364 | 0.000394 |         1 |    1000 |         1/999999 |
-|    beaker |  1000000 |   32 | 0.000364 | 0.000392 |         1 |    1000 |         1/999999 |
-|    bridge |  1000000 |   32 | 0.000365 | 0.000386 |         1 |    1000 |         1/999999 |
-|     grail |  1000000 |   32 | 0.000363 | 0.000386 |         1 |    1000 |         1/999999 |
-|  juggling |  1000000 |   32 | 0.000603 | 0.000630 |         1 |    1000 |         1/999999 |
-|   trinity |  1000000 |   32 | 0.000362 | 0.000384 |         1 |    1000 |         1/999999 |
-|  reversal |  1000000 |   32 | 0.000520 | 0.000553 |         1 |    1000 |         1/999999 |
+|    bridge |  1000000 |   32 | 0.000389 | 0.000510 |         1 |     200 |         1/999999 |
+|     helix |  1000000 |   32 | 0.000383 | 0.000457 |         1 |     200 |         1/999999 |
+|   trinity |  1000000 |   32 | 0.000395 | 0.000482 |         1 |     200 |         1/999999 |
+|  reversal |  1000000 |   32 | 0.000517 | 0.000617 |         1 |     200 |         1/999999 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000434 | 0.000460 |         1 |    1000 |    100000/900000 |
-|    beaker |  1000000 |   32 | 0.000455 | 0.000479 |         1 |    1000 |    100000/900000 |
-|    bridge |  1000000 |   32 | 0.000436 | 0.000460 |         1 |    1000 |    100000/900000 |
-|     grail |  1000000 |   32 | 0.000457 | 0.000481 |         1 |    1000 |    100000/900000 |
-|  juggling |  1000000 |   32 | 0.000632 | 0.000657 |         1 |    1000 |    100000/900000 |
-|   trinity |  1000000 |   32 | 0.000420 | 0.000445 |         1 |    1000 |    100000/900000 |
-|  reversal |  1000000 |   32 | 0.000513 | 0.000543 |         1 |    1000 |    100000/900000 |
+|    bridge |  1000000 |   32 | 0.000385 | 0.000445 |         1 |     200 |      1000/999000 |
+|     helix |  1000000 |   32 | 0.000487 | 0.000559 |         1 |     200 |      1000/999000 |
+|   trinity |  1000000 |   32 | 0.000412 | 0.000469 |         1 |     200 |      1000/999000 |
+|  reversal |  1000000 |   32 | 0.000507 | 0.000581 |         1 |     200 |      1000/999000 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000471 | 0.000501 |         1 |    1000 |    199999/800001 |
-|    beaker |  1000000 |   32 | 0.000676 | 0.000702 |         1 |    1000 |    199999/800001 |
-|    bridge |  1000000 |   32 | 0.000471 | 0.000492 |         1 |    1000 |    199999/800001 |
-|     grail |  1000000 |   32 | 0.000635 | 0.000668 |         1 |    1000 |    199999/800001 |
-|  juggling |  1000000 |   32 | 0.000798 | 0.000831 |         1 |    1000 |    199999/800001 |
-|   trinity |  1000000 |   32 | 0.000435 | 0.000460 |         1 |    1000 |    199999/800001 |
-|  reversal |  1000000 |   32 | 0.000522 | 0.000557 |         1 |    1000 |    199999/800001 |
+|    bridge |  1000000 |   32 | 0.000456 | 0.000616 |         1 |     200 |     99999/900001 |
+|     helix |  1000000 |   32 | 0.000543 | 0.000619 |         1 |     200 |     99999/900001 |
+|   trinity |  1000000 |   32 | 0.000446 | 0.000551 |         1 |     200 |     99999/900001 |
+|  reversal |  1000000 |   32 | 0.000519 | 0.000598 |         1 |     200 |     99999/900001 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000525 | 0.000552 |         1 |    1000 |    299998/700002 |
-|    beaker |  1000000 |   32 | 0.000498 | 0.000524 |         1 |    1000 |    299998/700002 |
-|    bridge |  1000000 |   32 | 0.000521 | 0.000545 |         1 |    1000 |    299998/700002 |
-|     grail |  1000000 |   32 | 0.000521 | 0.000548 |         1 |    1000 |    299998/700002 |
-|  juggling |  1000000 |   32 | 0.001943 | 0.001991 |         1 |    1000 |    299998/700002 |
-|   trinity |  1000000 |   32 | 0.000437 | 0.000474 |         1 |    1000 |    299998/700002 |
-|  reversal |  1000000 |   32 | 0.000520 | 0.000575 |         1 |    1000 |    299998/700002 |
+|    bridge |  1000000 |   32 | 0.000495 | 0.000595 |         1 |     200 |    199998/800002 |
+|     helix |  1000000 |   32 | 0.000572 | 0.000656 |         1 |     200 |    199998/800002 |
+|   trinity |  1000000 |   32 | 0.000447 | 0.000513 |         1 |     200 |    199998/800002 |
+|  reversal |  1000000 |   32 | 0.000519 | 0.000636 |         1 |     200 |    199998/800002 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000567 | 0.000606 |         1 |    1000 |    399997/600003 |
-|    beaker |  1000000 |   32 | 0.000522 | 0.000549 |         1 |    1000 |    399997/600003 |
-|    bridge |  1000000 |   32 | 0.000512 | 0.000532 |         1 |    1000 |    399997/600003 |
-|     grail |  1000000 |   32 | 0.000550 | 0.000578 |         1 |    1000 |    399997/600003 |
-|  juggling |  1000000 |   32 | 0.001744 | 0.001788 |         1 |    1000 |    399997/600003 |
-|   trinity |  1000000 |   32 | 0.000435 | 0.000465 |         1 |    1000 |    399997/600003 |
-|  reversal |  1000000 |   32 | 0.000518 | 0.000554 |         1 |    1000 |    399997/600003 |
+|    bridge |  1000000 |   32 | 0.000557 | 0.000659 |         1 |     200 |    299997/700003 |
+|     helix |  1000000 |   32 | 0.000519 | 0.000694 |         1 |     200 |    299997/700003 |
+|   trinity |  1000000 |   32 | 0.000441 | 0.000544 |         1 |     200 |    299997/700003 |
+|  reversal |  1000000 |   32 | 0.000515 | 0.000701 |         1 |     200 |    299997/700003 |
 |           |          |      |          |          |           |         |                  |
-| auxiliary |  1000000 |   32 | 0.000609 | 0.000651 |         1 |    1000 |    499996/500004 |
-|    beaker |  1000000 |   32 | 0.000468 | 0.000498 |         1 |    1000 |    499996/500004 |
-|    bridge |  1000000 |   32 | 0.000377 | 0.000397 |         1 |    1000 |    499996/500004 |
-|     grail |  1000000 |   32 | 0.000796 | 0.000828 |         1 |    1000 |    499996/500004 |
-|  juggling |  1000000 |   32 | 0.001084 | 0.001124 |         1 |    1000 |    499996/500004 |
-|   trinity |  1000000 |   32 | 0.000376 | 0.000401 |         1 |    1000 |    499996/500004 |
-|  reversal |  1000000 |   32 | 0.000513 | 0.000545 |         1 |    1000 |    499996/500004 |
+|    bridge |  1000000 |   32 | 0.000527 | 0.000612 |         1 |     200 |    399996/600004 |
+|     helix |  1000000 |   32 | 0.000481 | 0.000553 |         1 |     200 |    399996/600004 |
+|   trinity |  1000000 |   32 | 0.000437 | 0.000506 |         1 |     200 |    399996/600004 |
+|  reversal |  1000000 |   32 | 0.000506 | 0.000602 |         1 |     200 |    399996/600004 |
+|           |          |      |          |          |           |         |                  |
+|    bridge |  1000000 |   32 | 0.000394 | 0.000488 |         1 |     200 |    499995/500005 |
+|     helix |  1000000 |   32 | 0.000669 | 0.000746 |         1 |     200 |    499995/500005 |
+|   trinity |  1000000 |   32 | 0.000398 | 0.000498 |         1 |     200 |    499995/500005 |
+|  reversal |  1000000 |   32 | 0.000511 | 0.000590 |         1 |     200 |    499995/500005 |
+
+</details>
+
+![rotation graph](/images/contrev_piston_griesmills_juggler.png)
+
+<details><summary><b>data table</b></summary>
+
+|      Name |    Items | Type |     Best |  Average |     Loops | Samples |     Distribution |
+| --------- | -------- | ---- | -------- | -------- | --------- | ------- | ---------------- |
+|   contrev |  1000000 |   32 | 0.000717 | 0.000840 |         1 |     200 |         1/999999 |
+|    piston |  1000000 |   32 | 0.002091 | 0.002398 |         1 |     200 |         1/999999 |
+|griesmills |  1000000 |   32 | 0.002436 | 0.002565 |         1 |     200 |         1/999999 |
+|   juggler |  1000000 |   32 | 0.000612 | 0.000701 |         1 |     200 |         1/999999 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000416 | 0.000487 |         1 |     200 |      1000/999000 |
+|    piston |  1000000 |   32 | 0.000474 | 0.000549 |         1 |     200 |      1000/999000 |
+|griesmills |  1000000 |   32 | 0.000490 | 0.000581 |         1 |     200 |      1000/999000 |
+|   juggler |  1000000 |   32 | 0.001234 | 0.001339 |         1 |     200 |      1000/999000 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000448 | 0.000512 |         1 |     200 |     99999/900001 |
+|    piston |  1000000 |   32 | 0.000534 | 0.000682 |         1 |     200 |     99999/900001 |
+|griesmills |  1000000 |   32 | 0.000550 | 0.000619 |         1 |     200 |     99999/900001 |
+|   juggler |  1000000 |   32 | 0.001279 | 0.001570 |         1 |     200 |     99999/900001 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000446 | 0.000528 |         1 |     200 |    199998/800002 |
+|    piston |  1000000 |   32 | 0.000564 | 0.000630 |         1 |     200 |    199998/800002 |
+|griesmills |  1000000 |   32 | 0.000578 | 0.000687 |         1 |     200 |    199998/800002 |
+|   juggler |  1000000 |   32 | 0.001282 | 0.001783 |         1 |     200 |    199998/800002 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000444 | 0.000517 |         1 |     200 |    299997/700003 |
+|    piston |  1000000 |   32 | 0.000517 | 0.000626 |         1 |     200 |    299997/700003 |
+|griesmills |  1000000 |   32 | 0.000527 | 0.000612 |         1 |     200 |    299997/700003 |
+|   juggler |  1000000 |   32 | 0.002259 | 0.002476 |         1 |     200 |    299997/700003 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000431 | 0.000502 |         1 |     200 |    399996/600004 |
+|    piston |  1000000 |   32 | 0.000505 | 0.000610 |         1 |     200 |    399996/600004 |
+|griesmills |  1000000 |   32 | 0.000509 | 0.000588 |         1 |     200 |    399996/600004 |
+|   juggler |  1000000 |   32 | 0.001983 | 0.002230 |         1 |     200 |    399996/600004 |
+|           |          |      |          |          |           |         |                  |
+|   contrev |  1000000 |   32 | 0.000443 | 0.000543 |         1 |     200 |    499995/500005 |
+|    piston |  1000000 |   32 | 0.000667 | 0.000755 |         1 |     200 |    499995/500005 |
+|griesmills |  1000000 |   32 | 0.000681 | 0.000776 |         1 |     200 |    499995/500005 |
+|   juggler |  1000000 |   32 | 0.001304 | 0.001475 |         1 |     200 |    499995/500005 |
 
 </details>
