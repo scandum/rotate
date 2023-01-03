@@ -119,6 +119,32 @@ void auxiliary_rotation(int *array, size_t left, size_t right)
 	free(swap);
 }
 
+void stack_rotation(int *array, size_t left, size_t right)
+{
+	int *pta, *ptb, *ptc, swap[8];
+
+	pta = array;
+	ptb = array + left;
+	ptc = array + right;
+
+	if (left < right)
+	{
+		memcpy(swap, pta, left * sizeof(int));
+
+		memmove(pta, ptb, right * sizeof(int));
+
+		memcpy(ptc, swap, left * sizeof(int));
+	}
+	else
+	{
+		memcpy(swap, ptb, right * sizeof(int));
+
+		memmove(ptc, pta, left * sizeof(int));
+
+		memcpy(pta, swap, right * sizeof(int));
+	}
+}
+
 // 3 reversal - Origin unknown, but prior to 1981
 
 void reversal_rotation(int *array, size_t left, size_t right)
@@ -186,7 +212,6 @@ void bridge_rotation(int *array, size_t left, size_t right)
 			memmove(ptc, pta, left * sizeof(int));
 			memcpy(pta, swap, right * sizeof(int));
 		}
-		
 	}
 	else
 	{
@@ -260,19 +285,16 @@ void contrev_rotation(int *array, size_t left, size_t right)
 	{
 		loop = left;
 
-		do
+		while (loop--)
 		{
 			swap = *pta; *pta++ = *ptb; *ptb++ = swap;
 		}
-		while (--loop);
-
-		return;
 	}
 }
 
 // 2021 - Trinity rotation by Igor van den Hoven (Conjoined Triple Reversal + Bridge rotation)
 
-#define MAX_AUX 16
+#define MAX_AUX 8
 
 void trinity_rotation(int *array, size_t left, size_t right)
 {
@@ -475,7 +497,7 @@ void grail_rotation(int *array, size_t left, size_t right)
 
 	if (min)
 	{
-		auxiliary_rotation(array + start, left, right);
+		stack_rotation(array + start, left, right);
 	}
 }
 
@@ -507,11 +529,11 @@ void piston_rotation(int *array, size_t left, size_t right)
 
 /*	if (left && right)
 	{
-		auxiliary_rotation(array + start, left, right);
+		stack_rotation(array + start, left, right);
 	}*/
 }
 
-// 2021 - Helix rotation by Control (Grail derived)
+// 2021 - Helix rotation by Control (grail derived)
 
 void helix_rotation(int *array, size_t left, size_t right)
 {
@@ -554,11 +576,11 @@ void helix_rotation(int *array, size_t left, size_t right)
 
 	if (left && right)
 	{
-		auxiliary_rotation(array + start, left, right);
+		stack_rotation(array + start, left, right);
 	}
 }
 
-// 2021 - Drill rotation by Igor van den Hoven (Grail derived with helix swaps and piston loop)
+// 2021 - Drill rotation by Igor van den Hoven (grail derived with piston and helix loops)
 
 void drill_rotation(int *array, size_t left, size_t right)
 {
@@ -568,7 +590,7 @@ void drill_rotation(int *array, size_t left, size_t right)
 	size_t mid = left;
 	size_t loop;
 
-	while (left > 512)
+	while (left > 1)
 	{
 		if (left <= right)
 		{
@@ -581,7 +603,7 @@ void drill_rotation(int *array, size_t left, size_t right)
 			while (--loop);
 		}
 
-		if (right <= 512)
+		if (right <= 1)
 		{
 			break;
 		}
@@ -597,7 +619,7 @@ void drill_rotation(int *array, size_t left, size_t right)
 
 	if (left && right)
 	{
-		auxiliary_rotation(array + start, left, right);
+		stack_rotation(array + start, left, right);
 	}
 }
 
@@ -620,6 +642,11 @@ void juggling_rotation(int *array, size_t left, size_t right)
 {
 	int *pta, *ptb, *ptc, *ptd, swap;
 	const size_t nmemb = left + right;
+
+	if (left == 0)
+	{
+		return;
+	}
 
 	ptd = array + gcd(left, nmemb);
 
