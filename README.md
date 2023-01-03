@@ -25,7 +25,7 @@ According to Sean Parent rotations are a very common operation: https://www.yout
 
 Auxiliary Rotation
 ------------------
-This is an easy and fast way to rotate, but since it requires auxiliary memory it is of little interest to in-place algorithms.
+This is an easy and fast way to rotate, but since it requires auxiliary memory it is of little interest to in-place algorithms. It's a good strategy for array sizes of 1000 elements or less.
 
 Typically the smaller half is copied to swap memory, the larger half is moved, and the swap memory is copied back to the main array.
 ```c
