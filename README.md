@@ -48,9 +48,7 @@ Typically the smaller half is copied to swap memory, the larger half is moved, a
 
 Bridge Rotation
 ---------------
-This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%. Its first known publication was in 2021.
-
-If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead.
+This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%. If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead. Its first known publication was in 2021 by Igor van den Hoven.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -118,7 +116,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 
 Triple Reversal Rotation
 ------------------------
-This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There's no known first publication.
+This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There's no known first publication, but it was prior to 1981.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -141,7 +139,7 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 
 Gries-Mills Rotation
 --------------------
-In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981. 
+In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981 by David Gries and Harlan Mills. 
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -194,7 +192,7 @@ The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and t
 
 Helix Rotation
 ---------------
-The helix rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. It is an improvement upon the Grail rotation by merging the two inner loops into a single loop, significantly improving performance when the relative size difference between the two halves is large. In addition it doesn't stop when the smallest block no longer fits, but continues and recalculates the left or right side. The utilization of the merged loops is counter-intuitive and is likely novel. Its first known publication was in 2021.
+The helix rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. It is an improvement upon the Grail rotation by merging the two inner loops into a single loop, significantly improving performance when the relative size difference between the two halves is large. In addition it doesn't stop when the smallest block no longer fits, but continues and recalculates the left or right side. The utilization of the merged loops is counter-intuitive and is likely novel. Its first known publication was in 2021 by Control from the Holy Grail Sort Project.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -217,7 +215,7 @@ The helix rotation has similarities with the Gries-Mills rotation but has a dist
 
 Trinity Rotation
 ----------------
-The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Control from the Holy Grail Sort Project.
+The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Igor van den Hoven.
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
