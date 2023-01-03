@@ -1,6 +1,6 @@
 The most commonly used rotation algorithms (aka block swaps) were documented around 1981 and haven't notably changed since.
 
-Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the [trinity rotation](https://github.com/scandum/rotate#Trinity-Rotation), followed by a [benchmarks](https://github.com/scandum/rotate#Benchmarks).
+Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the [trinity rotation](https://github.com/scandum/rotate#Trinity-Rotation), followed by some [benchmarks](https://github.com/scandum/rotate#Benchmarks).
 
 Introduction to rotating
 ------------------------
