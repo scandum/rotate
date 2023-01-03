@@ -50,7 +50,7 @@ Typically the smaller half is copied to swap memory, the larger half is moved, a
 
 Bridge Rotation
 ---------------
-This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%. If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead. Its first known publication was in 2021 by Igor van den Hoven.
+This is a slightly more complex auxiliary rotation that reduces the maximum auxiliary memory requirement from 50% to 33%. If the overlap between the two halves is smaller than the halves themselves it copies the overlap to swap memory instead. Its first known publication was in 2021 by Igor van den Hoven.[^1]
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -93,7 +93,7 @@ This is a slightly more complex auxiliary rotation that reduces the maximum auxi
 
 Juggling Rotation
 -----------------
-Also known as the dolphin algorithm. This is a relatively complex and inefficient way to rotate in-place, though it does so in the minimal number of moves. Its first known publication was in 1965.
+Also known as the dolphin algorithm. This is a relatively complex and inefficient way to rotate in-place, though it does so in the minimal number of moves. Its first known publication was in 1966.[^2]
 
 It computes the greatest common divisor and uses a loop to create a chain of consecutive swaps.
 
@@ -118,7 +118,7 @@ It computes the greatest common divisor and uses a loop to create a chain of con
 
 Triple Reversal Rotation
 ------------------------
-This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There's no known first publication, but it was prior to 1981.
+This is an easy and reliable way to rotate in-place. You reverse the left side, next you reverse the right side, next you reverse the entire array. Upon completion the left and right block will be swapped. There's no known first publication, but it was prior to 1981.[^3]
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -141,7 +141,7 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 
 Gries-Mills Rotation
 --------------------
-In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now the smallest array, which you rotate in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981 by David Gries and Harlan Mills. 
+In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now the smallest array, which you rotate in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981 by David Gries and Harlan Mills.[^3]
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -164,7 +164,7 @@ In some cases this rotation outperforms the classic triple reversal rotation whi
 
 Successive Rotation
 -------------------
-First described by Gries and Mills in 1981, this rotation is very similar to the Gries-Mills rotation but performs non-linear swaps. It is implemented as the Piston Rotation in the benchmark, named after a loop optimization that removes up to `log n` branch mispredictions by performing both a left and rightward rotation in each loop.
+First described by Gries and Mills in 1981, this rotation is very similar to the Gries-Mills rotation but performs non-linear swaps.[^3] It is implemented as the Piston Rotation in the benchmark, named after a loop optimization that removes up to `log n` branch mispredictions by performing both a left and rightward rotation in each loop.
 
 ```c
 ┌──────────────────────────┬─────────────────┐
@@ -188,13 +188,13 @@ First described by Gries and Mills in 1981, this rotation is very similar to the
 
 Grail Rotation
 --------------
-The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from. In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element, which is the worst case for the Gries-Mills rotation. The flow diagram is identical to that of Gries-Mills, but due to memory being shifted from the right the visualization differs.
+The grail rotation from the Holy Grail Sort Project is Gries-Mills derived and tries to improve locality by shifting memory either left or right depending on which side it's swapped from.[^4] In addition it performs an auxiliary rotation on stack memory when the smallest side reaches a size of 1 element, which is the worst case for the Gries-Mills rotation. The flow diagram is identical to that of Gries-Mills, but due to memory being shifted from the right the visualization differs.
 
 [![grail rotation](/images/grail.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=67s)
 
 Helix Rotation
 ---------------
-The helix rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. It is an improvement upon the Grail rotation by merging the two inner loops into a single loop, significantly improving performance when the relative size difference between the two halves is large. In addition it doesn't stop when the smallest block no longer fits, but continues and recalculates the left or right side. The utilization of the merged loops is counter-intuitive and is likely novel. Its first known publication was in 2021 by Control from the Holy Grail Sort Project.
+The helix rotation has similarities with the Gries-Mills rotation but has a distinct sequential movement pattern. It is an improvement upon the Grail rotation by merging the two inner loops into a single loop, significantly improving performance when the relative size difference between the two halves is large. In addition it doesn't stop when the smallest block no longer fits, but continues and recalculates the left or right side. The utilization of the merged loops is counter-intuitive and is likely novel. Its first known publication was in 2021 by Control from the Holy Grail Sort Project.[^4]
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -221,7 +221,7 @@ The drill rotation is a grail variant that utilizes a piston main loop and a hel
 
 Trinity Rotation
 ----------------
-The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Igor van den Hoven.
+The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Igor van den Hoven.[^1]
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -364,3 +364,11 @@ The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18
 |   juggler |  1000000 |   32 | 0.001304 | 0.001475 |         1 |     200 |    499995/500005 |
 
 </details>
+
+Footnotes
+---------
+
+[^1]: [A collection of array rotation algorithms, Igor van den Hoven, May 2021](https://raw.githubusercontent.com/scandum/rotate/ae113459f2f2ad236666f841f230ec13446e242e/src/rotate.h)
+[^2]: [Algorithm 284: Interchange of two blocks of data, William Fletcher and Roland Silver, May 1966](https://dl.acm.org/doi/10.1145/355592.365609)
+[^3]: [SWAPPING SECTIONS, David Gries and Harlan Mills, January 1981](https://ecommons.cornell.edu/bitstream/handle/1813/6292/81-452.pdf)
+[^4]: [The Holy Grail Sort Project](https://github.com/HolyGrailSortProject)
