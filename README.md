@@ -2,6 +2,8 @@ The most commonly used rotation algorithms (aka block swaps) were documented aro
 
 Below I'll describe the known variants as well as three novel rotation algorithms introduced in 2021, notably the [trinity rotation](https://github.com/scandum/rotate#Trinity-Rotation), followed by some [benchmarks](https://github.com/scandum/rotate#Benchmarks).
 
+[C source code](https://github.com/scandum/rotate/tree/main/src) is available for all rotations described.
+
 Introduction to rotating
 ------------------------
 A rotation is to swap the left side of an array with the right side.
@@ -139,7 +141,7 @@ This is an easy and reliable way to rotate in-place. You reverse the left side, 
 
 Gries-Mills Rotation
 --------------------
-In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now divided in two parts, which you swap in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981 by David Gries and Harlan Mills. 
+In some cases this rotation outperforms the classic triple reversal rotation while making fewer moves. You swap the smallest array linearly towards its proper location, since the blocks behind it are in the proper location you can forget about them. What remains of the larger array is now the smallest array, which you rotate in a similar manner, until the smallest side shrinks to 0 elements. Its first known publication was in 1981 by David Gries and Harlan Mills. 
 ```c
 ┌──────────────────────────┬─────────────────┐
 │ 1  2  3  4  5  6  7  8  9│10 11 12 13 14 15│
@@ -162,7 +164,7 @@ In some cases this rotation outperforms the classic triple reversal rotation whi
 
 Successive Rotation
 -------------------
-First described by Gries and Mills in 1981, this rotation is very similar to the Gries-Mills rotation but performs non-linear swaps. It is implemented as the Piston Rotation in the benchmark, named after a loop optimization that removes up to `log n` branch mispredictions by block swapping in pairs of two.
+First described by Gries and Mills in 1981, this rotation is very similar to the Gries-Mills rotation but performs non-linear swaps. It is implemented as the Piston Rotation in the benchmark, named after a loop optimization that removes up to `log n` branch mispredictions by performing both a left and rightward rotation in each loop.
 
 ```c
 ┌──────────────────────────┬─────────────────┐
@@ -213,6 +215,10 @@ The helix rotation has similarities with the Gries-Mills rotation but has a dist
 
 [![helix rotation](/images/helix.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=108s)
 
+Drill Rotation
+--------------
+The drill rotation is a grail variant that utilizes a piston main loop and a helix inner loop. Performance is similar to the helix rotation. The flow diagram and visualization are identical to the grail rotation.
+
 Trinity Rotation
 ----------------
 The trinity rotation (aka conjoined triple reversal) is derived from the triple reversal rotation. Rather than three separate reversals it conjoins the three reversals, improving locality and reducing the number of moves. Optionally, if the overlap is smaller than 8 elements, it skips the trinity rotation and performs an auxiliary or bridge rotation on stack memory. Its first known publication was in 2021 by Igor van den Hoven.
@@ -258,14 +264,15 @@ Since the auxiliary/bridge rotations are fairly similar I've omitted the auxilia
 
 While performance may vary depending on the specific implemention and array size, from worst to best the order is:
 
-* Juggling Rotation (juggling)
+* Juggling Rotation (juggler)
 * Auxiliary Rotation
 * Gries-Mills Rotation (griesmills)
-* Piston Rotation (piston)
+* Successive Rotation (piston)
 * Grail Rotation
 * Bridge Rotation (bridge)
 * Triple Reversal Rotation (reversal)
 * Helix Rotation (helix)
+* Conjoined Triple Reversal Rotation (contrev)
 * Trinity Rotation (trinity)
 
 It should be noted that the auxiliary Rotation performs better for smaller arrays and when the relative size difference between the two halves is large.
