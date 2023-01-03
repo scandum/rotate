@@ -87,7 +87,7 @@ This is a slightly more complex auxiliary rotation that reduces the maximum auxi
 └─────────────────┴──────────────────────────┘
 ```
 
-[![bridge rotation](/images/bridge.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=0s)
+[![bridge rotation](/images/bridge.gif)](https://www.youtube.com/watch?v=rHubUT40FDc&t=15s)
 
 Juggling Rotation
 -----------------
